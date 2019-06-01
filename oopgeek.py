@@ -101,24 +101,42 @@ class Snake(Figure):
         self.points.append(head)
         head.setpoint()
 
+def set_direction_up():
+    sk.direction = 'UP'
+
+def set_direction_dn():
+    sk.direction = 'DOWN'
+
+def set_direction_rt():
+    sk.direction = 'RIGHT'
+
+def set_direction_lt():
+    sk.direction = 'LEFT'
+
 
 if __name__ == '__main__':
     window = turtle.Screen()
+    turtle.listen()
+    window.onkey(set_direction_up, 'Up')
+    window.onkey(set_direction_dn, 'Down')
+    window.onkey(set_direction_rt, 'Right')
+    window.onkey(set_direction_lt, 'Left')
     turtle.ht()
-    p = Point(10, 20, 'red')
-    p.setpoint()
-
-    hr = HorizontalLine(100, 100, 20, 'blue')
-    hr.draw()
-
-    vr = VerticallLine(110, 90, 20, 'red')
-    vr.draw()
+    # p = Point(10, 20, 'red')
+    # p.setpoint()
+    #
+    # hr = HorizontalLine(100, 100, 20, 'blue')
+    # hr.draw()
+    #
+    # vr = VerticallLine(110, 90, 20, 'red')
+    # vr.draw()
 
     pnt = Point(50, 50, 'green')
-    sk = Snake(pnt, 10, 'DOWN')
+    sk = Snake(pnt, length=20, direction='DOWN')
     sk.draw()
-    for _ in range(20):
-        # sleep(1)
-        sk.move()
+    # for _ in range(20):
+    #     sleep(1)
+    #     sk.move()
     while True:
-        window.update()
+        sk.move()
+        # window.update()
