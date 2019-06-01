@@ -101,6 +101,27 @@ class Snake(Figure):
         self.points.append(head)
         head.setpoint()
 
+    def eat(self, food):
+        head = self.points[self.length - 1]
+
+
+
+class FoodCreator:
+    _radius = 9
+
+    def __init__(self, screen_width, screen_height, color):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.color = color
+
+    def get_food(self):
+        food_point = Point(x=randint(0, self.screen_width),
+                           y=randint(0, self.screen_height),
+                           color=self.color)
+        food_point.radius = self._radius
+        return food_point
+
+
 def set_direction_up():
     sk.direction = 'UP'
 
@@ -117,11 +138,13 @@ def set_direction_lt():
 if __name__ == '__main__':
     window = turtle.Screen()
     turtle.listen()
+    window.delay(2)
     window.onkey(set_direction_up, 'Up')
     window.onkey(set_direction_dn, 'Down')
     window.onkey(set_direction_rt, 'Right')
     window.onkey(set_direction_lt, 'Left')
     turtle.ht()
+
     # p = Point(10, 20, 'red')
     # p.setpoint()
     #
@@ -134,9 +157,11 @@ if __name__ == '__main__':
     pnt = Point(50, 50, 'green')
     sk = Snake(pnt, length=20, direction='DOWN')
     sk.draw()
-    # for _ in range(20):
-    #     sleep(1)
-    #     sk.move()
+
+    food_creator = FoodCreator(window.canvwidth, window.canvheight, 'red')
+    food = food_creator.get_food()
+    food.setpoint()
+
     while True:
         sk.move()
         # window.update()
