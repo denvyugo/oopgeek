@@ -32,6 +32,8 @@ class Point:
         turtle.setposition(self.x, self.y)
         turtle.dot(self.radius, turtle.Screen().bgcolor())
 
+    def hit(self, hit_point):
+        return self.x == hit_point.x and self.y == hit_point.y
 
 class Figure:
 
@@ -54,7 +56,7 @@ class HorizontalLine(Figure):
             self.points.append(p)
 
 
-class VerticallLine(Figure):
+class VerticalLine(Figure):
 
     def __init__(self, startx, starty, length, color):
         self.startx = startx
@@ -102,8 +104,22 @@ class Snake(Figure):
         head.setpoint()
 
     def eat(self, food):
-        head = self.points[self.length - 1]
+        cur_head = self.points[self.length - 1]
+        if cur_head.hit(food):
+            direct = DIRECTION[self.direction]
+            curx = cur_head.x + direct[0]
+            cury = cur_head.y + direct[1]
+            new_head = Point(curx, cury, cur_head.color)
+            self.points.append(new_head)
+            self.length += 1
+            return True
 
+    def is_hit_self(self):
+        cur_head = self.points[self.length - 1]
+        for i in range(self.length - 1):
+            point = self.points[i]
+            if point.hit(cur_head):
+                return True
 
 
 class FoodCreator:
@@ -137,6 +153,9 @@ def set_direction_lt():
 
 if __name__ == '__main__':
     window = turtle.Screen()
+    # window.setup(204, 204)
+    window.screensize(canvwidth=200, canvheight=200)
+    window.tracer(n=8)
     turtle.listen()
     window.delay(2)
     window.onkey(set_direction_up, 'Up')
@@ -151,7 +170,7 @@ if __name__ == '__main__':
     # hr = HorizontalLine(100, 100, 20, 'blue')
     # hr.draw()
     #
-    # vr = VerticallLine(110, 90, 20, 'red')
+    # vr = VerticalLine(110, 90, 20, 'red')
     # vr.draw()
 
     pnt = Point(50, 50, 'green')
@@ -160,8 +179,16 @@ if __name__ == '__main__':
 
     food_creator = FoodCreator(window.canvwidth, window.canvheight, 'red')
     food = food_creator.get_food()
-    food.setpoint()
+
 
     while True:
+        food.setpoint()
         sk.move()
+        if sk.is_hit_self():
+            break
+        if sk.eat(food):
+            food.clear()
+            food = food_creator.get_food()
+            sk.draw()
+            # food.setpoint()
         # window.update()
